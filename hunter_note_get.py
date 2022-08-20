@@ -1,4 +1,5 @@
 import json
+from tkinter.tix import Tree
 import requests
 from bs4 import BeautifulSoup
 
@@ -40,17 +41,25 @@ for monster in monsters[1:]:
         'anomalyItem': '', #傀異素材
     }
 
-    # リンクを取得してアクセス
-    href = monster.select_one('td > a')
-    if href == None:
+    # aタグ参照
+    atag = monster.select_one('td > a')
+    if atag == None:
         continue # 例外をスキップ
     else:
-        link = href.get('href')
+        link = atag.get('href')
+    
+    # 詳細ページのリンクを取得
     req = requests.get(link)
     bs = BeautifulSoup(req.content, "html.parser")
 
     # 名前を取得
-    status['name'] = bs.select_one('h1._title').text.split('】')[1].split('の')[0].split('(')[0]
+    status['name'] = atag.text
+
+    # アイコン画像を保存
+    img = requests.get(atag.select_one('img')['data-original'])
+    if img.status_code == 200:
+        with open('./img/' + status['name'] + '.png', 'wb') as f:
+            f.write(img.content)
 
     # テーブル情報を集める
     tableA = bs.select('.mhrise_footer')

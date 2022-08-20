@@ -17,8 +17,7 @@ th,td {
 table {
     table-layout: fixed;
     border-collapse: collapse; /* セルの線を重ねる */
-    font-size: 7px;
+    font-size: 10px;
     width: 100%;
 }
-
 
